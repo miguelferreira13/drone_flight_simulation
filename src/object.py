@@ -63,8 +63,6 @@ class Object:
                        json_data)
                        )
 
-        conn.commit()
-
     def update(self, current_time):
         seconds_since_creation = (current_time - self.created_time).total_seconds()
         distance_traveled_km = (self.speed * seconds_since_creation) / 1000

@@ -14,8 +14,13 @@ def get_conn() -> Connection:
             sector_id TEXT,
             payload TEXT,
             data TEXT
-        )
-        """)
+        )""")
+
+    cursor.execute("""CREATE INDEX timestamp_object_id_index
+        ON logs(timestamp, object_id)""")
+
+    cursor.execute("""CREATE INDEX timestamp_sector_id_index
+        ON logs(timestamp, sector_id)""")
 
     conn.commit()
     return conn

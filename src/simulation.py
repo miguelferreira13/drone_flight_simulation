@@ -8,8 +8,6 @@ from world import World
 
 def begin_simulation():
 
-    conn = db.get_conn()
-
     world = World(min_x=config.MIN_X_KM,
                   max_x=config.MAX_X_KM,
                   min_y=config.MIN_Y_KM,
@@ -21,16 +19,17 @@ def begin_simulation():
                                world=world)
 
     current_time = config.START_TIME
-    while current_time <= config.END_TIME:
-        for obj in objects:
-            if not obj.active(current_time):
-                continue
-            obj.log(conn, current_time)
-            obj.update(current_time)
+    conn = db.get_conn()
 
-        current_time += timedelta(milliseconds=config.LOG_RATE_MILISECONDS)
+    with conn:
+        while current_time <= config.END_TIME:
+            for obj in objects:
+                if not obj.active(current_time):
+                    continue
+                obj.log(conn, current_time)
+                obj.update(current_time)
 
-    conn.close()
+            current_time += timedelta(milliseconds=config.LOG_RATE_MILISECONDS)
 
 if __name__ == '__main__':
     s = datetime.now()
